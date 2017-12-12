@@ -1,0 +1,183 @@
+﻿<Window x:Class="InventoryClient.WindowInventory"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:InventoryClient"
+        mc:Ignorable="d"
+        Title="{Binding TitleText}" Height="500" Width="800" Topmost="False" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" WindowState="Maximized" WindowStyle="None" FontSize="18">
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <Grid Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Grid.ColumnSpan="3" Text="Списание расходных материалов" FontWeight="Bold" FontSize="20" 
+                       HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10"/>
+            <StackPanel Grid.Row="1" Grid.Column="1" Orientation="Horizontal" Margin="10,0,10,10">
+                <TextBlock Text="Время сохранения лечения:"/>
+                <TextBlock Text="{Binding CreateDateTime}" Margin="10,0,0,0"/>
+                <TextBlock Text="Врач:" Margin="20,0,0,0"/>
+                <TextBlock Text="{Binding DoctorName}" Margin="10,0,0,0"/>
+                <TextBlock Text="Пациент:" Margin="20,0,0,0"/>
+                <TextBlock Text="{Binding ClientName}" Margin="10,0,0,0"/>
+            </StackPanel>
+            
+            <Image Grid.Row="0" Grid.Column="2" Grid.RowSpan="2" Source="ButterflyClear.png" Margin="0,10,10,0" HorizontalAlignment="Right" 
+                   StretchDirection="DownOnly" MaxWidth="106" MaxHeight="100"/>
+        </Grid>
+        
+        <TextBox Grid.Row="2" Grid.ColumnSpan="2" Text="{DynamicResource String1}" TextWrapping="Wrap" Margin="10,20" 
+                 HorizontalAlignment="Center" HorizontalContentAlignment="Center" IsReadOnly="True" BorderThickness="0"/>
+        
+        <TextBlock Grid.Row="3" Text="Список оказанных услуг и материалов для списания:" Margin="10,10,0,0" FontSize="20" 
+                   Grid.ColumnSpan="2" HorizontalAlignment="Center" FontWeight="Bold"/>
+        
+        <ListView  Grid.Row="4" x:Name="listViewServices" Margin="15,0,20,0" ItemsSource="{Binding ServiceItems}" FontSize="18" Grid.ColumnSpan="2">
+            <ListView.Resources>
+                <Style x:Key="hcs" TargetType="{x:Type GridViewColumnHeader}">
+                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                </Style>
+            </ListView.Resources>
+            
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                </Style>
+            </ListView.ItemContainerStyle>
+            
+            <ListView.View>
+                <GridView AllowsColumnReorder="False">
+                    <GridViewColumn Header="Наименование" DisplayMemberBinding="{Binding Name}"/>
+
+                    <GridViewColumn Header="Норматив&#x0a;на услугу&#x0a;в ед.экз.">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding CountStandard}" TextAlignment="Right"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                    <GridViewColumn Header="Ед.&#x0a;изм." DisplayMemberBinding="{Binding Unit}"/>
+                    
+                    <GridViewColumn Width="60">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button HorizontalAlignment="Right" Click="ButtonAddOrRemove_Click" Tag="Remove">
+                                    <Button.Content>
+                                        <Image Source="{StaticResource Remove}" MaxWidth="16" MaxHeight="16" HorizontalAlignment="Center" VerticalAlignment="Center" Stretch="Uniform" StretchDirection="DownOnly"/>
+                                    </Button.Content>
+                                </Button>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                    <GridViewColumn Header="Кол-во&#x0a;(факт)">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBox Text="{Binding CountFact}" Width="60" TextAlignment="Right" Background="{Binding CountFactBackground}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                    <GridViewColumn Width="60">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button HorizontalAlignment="Left" Click="ButtonAddOrRemove_Click" Tag="Add">
+                                    <Button.Content>
+                                        <Image Source="{StaticResource Add}" MaxWidth="16" MaxHeight="16" HorizontalAlignment="Center" VerticalAlignment="Center" StretchDirection="DownOnly"/>
+                                    </Button.Content>
+                                </Button>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    
+                    <GridViewColumn Header="Списать" HeaderContainerStyle="{StaticResource hcs}">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <CheckBox Name="IsUsed" HorizontalAlignment="Center" HorizontalContentAlignment="Center" IsChecked="{Binding WriteOff}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+            
+            <ListView.GroupStyle>
+                <GroupStyle>
+                    <GroupStyle.ContainerStyle>
+                        <Style TargetType="{x:Type GroupItem}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate>
+                                        <Expander IsExpanded="True">
+                                            <Expander.Header>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Name}" FontWeight="Bold" Foreground="Gray" FontSize="22" VerticalAlignment="Bottom" />
+                                                    <TextBlock Text=", наименований материалов: " FontSize="22" Foreground="Silver" FontStyle="Italic" VerticalAlignment="Bottom" />
+                                                    <TextBlock Text="{Binding ItemCount}" FontSize="22" Foreground="Silver" FontWeight="Bold" FontStyle="Italic" VerticalAlignment="Bottom" />
+                                                 </StackPanel>
+                                            </Expander.Header>
+                                            <ItemsPresenter />
+                                        </Expander>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </GroupStyle.ContainerStyle>
+                </GroupStyle>
+            </ListView.GroupStyle>
+        </ListView>
+
+        <Grid Grid.Row="5" Grid.ColumnSpan="2" Margin="20,20,20,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Комментарий к списанию: "/>
+            <TextBox Grid.Column="1"/>
+        </Grid>
+
+        <Grid Grid.Row="6" Grid.ColumnSpan="2" Margin="20,10,20,20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Content="Добавить материал" Width="250" Height="40" IsEnabled="False" HorizontalAlignment="Left"/>
+            <Button Grid.Column="1" Content="Подтвердить списание" Width="250" Height="40" Click="ButtonSubmit_Click" 
+                    FontSize="20" Background="#FF17AA23" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+            <Button Grid.Column="2" HorizontalAlignment="Right" IsEnabled="False">
+                <Button.Content>
+                    <Image Source="{StaticResource Key}" MaxWidth="40" MaxHeight="40"/>
+                </Button.Content>
+            </Button>
+        </Grid>
+
+        <Image Grid.Row="7" Grid.Column="0" Source="BottomLineTemplate.png" Stretch="Fill" Height="10"/>
+        <Image Grid.Row="7" Grid.Column="1" Source="BottomLineContinuesClear.png" Height="10"/>
+    </Grid>
+</Window>
