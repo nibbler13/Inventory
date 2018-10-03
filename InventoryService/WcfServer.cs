@@ -12,6 +12,9 @@ namespace InventoryService {
 	public interface IWcfService {
 		[OperationContract(IsOneWay = true)]
 		void RegisterClient(string userIdentifier);
+
+		[OperationContract(IsOneWay = true)]
+		void SendResult(EventDataType )
 	}
 
 	public interface IWcfServiceCallback {
